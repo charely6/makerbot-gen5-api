@@ -398,7 +398,10 @@ class Makerbot(object):
         Returns:
           A JSON RPC formatted string.
         """
-        jsonrpc = {'id': id,
+        if params == "":
+            jsonrpc = {'id' : id, 'jsonrpc': '2.0', 'method': method}
+        else:
+            jsonrpc = {'id': id,
                    'jsonrpc': '2.0',
                    'method': method,
                    'params': params}
@@ -602,7 +605,7 @@ class Makerbot(object):
           A BotState object
         """
         response = self.rpc_request_response(
-            'get_system_information', {'username': 'conveyor'})
+            'get_system_information', '')
         bot_state = BotState()
 
         # Uncommment this line to see the raw JSON the bot is sending
@@ -663,6 +666,16 @@ class Makerbot(object):
         bot_state.current_process = current_bot_process
 
         return bot_state
+
+    def disable_check_build_plate(self):
+        """Disable build_plate_Check on MakerBot over JSON RPC.
+
+        Returns:
+          A BotState object
+        """
+        response = self.rpc_request_response(
+            'disable_check_build_plate', '')
+        return response
 
     def _rgb_clamp(self, x):
         """Clamp an RGB value between 0 and 255.
